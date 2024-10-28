@@ -25,6 +25,8 @@ class RoleController extends Controller
         
     }
 
+
+
     public function allPermission(){
         if(Auth::check()){            
             $permissions = Permission::all();

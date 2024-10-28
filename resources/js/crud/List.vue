@@ -60,7 +60,7 @@
                         </td>
 
                         <td>
-                            <span>{{ task.status }}</span>
+                            <span>{{ task.status }}</span> 
                             <select
                                 v-model="task.status"
                                 @change="updateStatus(task.id, task.status)"
@@ -127,25 +127,46 @@ export default {
         },
 
         destroy(task_id) {
-            axios
-                .delete("/api/auth/task/delete/" + task_id)
-                .then((success) => {
-                    this.taskList();
-                })
-                .catch((error) => {
-                    console.log("Data Error");
-                });
+            const token = localStorage.getItem("authToken");
+            if (token) {
+                axios
+                    .delete(`/api/auth/task/delete/${task_id}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then((success) => {
+                        this.taskList();
+                    })
+                    .catch((error) => {
+                        console.log("Data Error");
+                    });
+            } else {
+                this.$router.push({ name: "Login" });
+            }
         },
-
         updateStatus(task_id, status) {
-            axios
-                .put("/api/auth/task/status/" + task_id, { status: status })
-                .then((success) => {
-                    this.taskList();
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            const token = localStorage.getItem("authToken");
+            if (token) {
+                axios
+                    .put(
+                        "/api/auth/task/status/" + task_id,
+                        { status: status },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    )
+                    .then((success) => {
+                        this.taskList();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                this.$router.push({ name: "Login" });
+            }
         },
         logout() {
             const token = localStorage.getItem("authToken");

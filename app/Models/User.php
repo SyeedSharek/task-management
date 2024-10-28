@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Role; 
+use Spatie\Permission\Models\Permission; 
+
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -27,7 +29,6 @@ class User extends Authenticatable implements JWTSubject
         'password',
     ];
  
-    
     /**
      * The attributes that should be hidden for serialization.
      *

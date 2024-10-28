@@ -69,7 +69,7 @@ export default {
                     if (token) {
                         localStorage.setItem("authToken", token); // Save token to localStorage
 
-                        this.$router.push({ name: "Dashboard" }); // Redirect to the task list
+                        this.$router.push({ name: "List" }); // Redirect to the task list
                     } else {
                         console.log("Token is undefined or null");
                     }

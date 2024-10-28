@@ -52,6 +52,8 @@ Route::group([
       Route::get('/index','index');
       Route::delete('/delete/{id}','destroy');
       Route::get('/permissions', 'getUserPermissions');
+      Route::get('/rolewisepermission','RoleWisePermission');
+
 
 
     });
@@ -65,6 +67,7 @@ Route::group([
       Route::post('/update/{role}','update');
       Route::delete('/delete/{id}','destroy');
       Route::get('/show/{id}','show');
+
     });
 
   

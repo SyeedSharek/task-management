@@ -205,7 +205,9 @@ class TaskController extends Controller
     }
 
     public function search(Request $request){
+        
         $query = Task::with('user');
+        
 
         if ($request->has('status') && $request->status != '') {
             $query->where('status', 'LIKE', '%' .$request->status . '%');

@@ -19,7 +19,11 @@
                     {{ role.name }}
                 </td>
                 <td>
-                    <!-- <router-link
+                    <div
+                        v-for="checkPermission in roleWiserPermissions"
+                        :key="checkPermission.id"
+                    >
+                        <!-- <router-link
                         :to="{
                             name: 'Edit',
                             params: { id: task.id },
@@ -28,12 +32,13 @@
                         ><i class="fa-solid fa-pen-to-square"></i>
                     </router-link> -->
 
-                    <a
-                        v-if="can('delete user')"
-                        @click="destroy(user.id)"
-                        class="btn btn-danger"
-                        ><i class="fa-solid fa-trash"></i
-                    ></a>
+                        <a
+                            v-if="checkPermission.name == 'delete user'"
+                            @click="destroy(user.id)"
+                            class="btn btn-danger"
+                            ><i class="fa-solid fa-trash"></i
+                        ></a>
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -44,11 +49,12 @@ export default {
     data() {
         return {
             users: [],
+            roleWiserPermissions: [],
         };
     },
     mounted() {
         this.userList();
-        this.getPermissions();
+        this.RoleWisePermission();
     },
     methods: {
         userList() {
@@ -86,29 +92,21 @@ export default {
             }
         },
 
-        getPermissions() {
+        RoleWisePermission() {
             const token = localStorage.getItem("authToken");
             if (token) {
                 axios
-                    .get("/api/auth/user/permissions", {
+                    .get("/api/auth/user/rolewisepermission", {
                         headers: { Authorization: `Bearer ${token}` },
                     })
                     .then((response) => {
-                        this.permissions = response.data.permissions; // Store the permissions
+                        console.log(response.data.permissions);
+                        this.roleWiserPermissions = response.data.permissions; // Store the permissions
                     })
                     .catch((error) => {
                         console.error("Error fetching permissions", error);
                     });
             }
-        },
-
-        // Check if the user has a specific permission
-        // Check if the user has a specific permission
-        can(permission) {
-            return (
-                Array.isArray(this.permissions) &&
-                this.permissions.includes(permission)
-            );
         },
     },
 };

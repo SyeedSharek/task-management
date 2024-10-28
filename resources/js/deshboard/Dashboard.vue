@@ -3,24 +3,27 @@
         <div class="row p-0">
             <div class="col-2 sidebar p-0">
                 <h4>Admin Dashboard</h4>
-                <div class="list-group list-group-flush text-bold">
+                <div
+                    v-for="checkRole in roleWiserPermissions"
+                    :key="checkRole.id"
+                    class="list-group list-group-flush text-bold"
+                >
                     <router-link
+                        v-if="checkRole.name === 'task list'"
                         :to="{ name: 'List' }"
                         class="list-group-item list-group-item-action list-group-item-dark active"
                         active-class="active"
                         >Task List</router-link
                     >
                     <a
+                        v-if="checkRole.name === 'dashboard'"
                         href="#"
                         class="list-group-item list-group-item-action list-group-item-dark"
                         >Dashboard</a
                     >
-                    <a
-                        href="#"
-                        class="list-group-item list-group-item-action list-group-item-dark"
-                        >Home</a
-                    >
+
                     <router-link
+                        v-if="checkRole.name === 'permission list'"
                         :to="{ name: 'PermissionList' }"
                         class="list-group-item list-group-item-action list-group-item-dark"
                         active-class="active"
@@ -28,6 +31,7 @@
                     >
 
                     <router-link
+                        v-if="checkRole.name === 'user list'"
                         :to="{ name: 'ListUserRole' }"
                         class="list-group-item list-group-item-action list-group-item-dark"
                         active-class="active"
@@ -54,7 +58,6 @@
                     </div>
                 </nav>
 
-                <!-- Content will be injected here based on route -->
                 <div class="main-view">
                     <router-view></router-view>
                 </div>
@@ -67,10 +70,13 @@ export default {
     data() {
         return {
             message: "Welcome to the Desh Board!",
+            roleWiserPermissions: [],
+            tasks: [],
         };
     },
     mounted() {
         this.taskList();
+        this.RoleWisePermission();
     },
     methods: {
         logout() {
@@ -105,6 +111,8 @@ export default {
                         },
                     })
                     .then((response) => {
+                        console.log(response.data.tasks);
+
                         this.tasks = response.data.tasks;
                     })
                     .catch((error) => {
@@ -113,6 +121,22 @@ export default {
             } else {
                 this.$router.push({ name: "Login" });
                 return;
+            }
+        },
+        RoleWisePermission() {
+            const token = localStorage.getItem("authToken");
+            if (token) {
+                axios
+                    .get("/api/auth/user/rolewisepermission", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
+                    .then((response) => {
+                        console.log(response.data.permissions);
+                        this.roleWiserPermissions = response.data.permissions; // Store the permissions
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching permissions", error);
+                    });
             }
         },
     },
@@ -127,10 +151,10 @@ body {
     overflow: hidden;
 }
 .sidebar {
-    height: 100vh; /* Full viewport height */
+    height: 100vh;
     background: none;
     background-color: #777;
-    overflow: hidden;
+    overflow-y: auto;
 }
 .list-group-item {
     background-color: transparent;
@@ -139,6 +163,8 @@ body {
 .logout-btn {
     margin-left: auto;
 }
-.main-view {
+.main-contain {
+    height: 100vh;
+    overflow-y: auto;
 }
 </style>

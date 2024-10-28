@@ -25,7 +25,9 @@ class RolePermissionSeeder extends Seeder
             ['name'=>'role list'],
             ['name'=>'create role'],
             ['name'=>'edit role'],
-            ['name'=>'delete role']         
+            ['name'=>'delete role'],                 
+            ['name'=>'permission list'],         
+            ['name'=>'task list'],         
 
         ];
 

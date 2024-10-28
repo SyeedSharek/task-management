@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use \App\Traits\AppResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class UserController extends Controller
 {
@@ -23,18 +25,24 @@ class UserController extends Controller
         
      }
 
-     public function getUserPermissions()
-    {
-        $user = Auth::user(); // Get the currently authenticated user
 
-        if ($user) {
-            // Get the permissions of the logged-in user
-            $permissions = $user->getAllPermissions()->pluck('name');
 
-            return response()->json(['permissions' => $permissions]);
+    public function RoleWisePermission(Request $request){
+    
+        if(Auth()->check()){
+            $user = Auth::user();
+            $roleWisePermission =$user->roles()
+            ->with('permissions:id,name')
+            ->get()
+            ->pluck('permissions')
+            ->flatten()
+            ->unique('id')
+            ->values();
+    
+            return response()->json(['message' => 'Role Wise Permission', 'permissions' => $roleWisePermission ]);
+        }else{
+            return $this->errorResponse('Unauthorized', 401);
         }
-
-        return response()->json(['message' => 'Unauthorized'], 401);
     }
     public function index()    {
         
@@ -44,8 +52,9 @@ class UserController extends Controller
        }else{
            return $this->errorResponse('Unauthorized', 401);
        }
-    }
 
+
+    }
     /**
      * Show the form for creating a new resource.
      */
