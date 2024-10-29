@@ -21,6 +21,7 @@
                                     type="text"
                                     class="form-control"
                                     v-model="formData.title"
+                                    required
                                 />
                                 <span
                                     class="text-danger"
@@ -35,6 +36,7 @@
                                     type="text"
                                     class="form-control"
                                     v-model="formData.description"
+                                    required
                                 />
                                 <span
                                     class="text-danger"
@@ -52,6 +54,7 @@
                                     type="date"
                                     class="form-control"
                                     v-model="formData.due_date"
+                                    required
                                 />
                                 <span
                                     class="text-danger"
@@ -71,6 +74,7 @@
                                     class="form-select custom-scroll"
                                     id="inputGroupSelect01"
                                     v-model="formData.user_id"
+                                    required
                                 >
                                     <option value="" disabled>Choose...</option>
                                     <!-- Loop through tasks and display the user_name for each task -->
@@ -111,6 +115,7 @@
 </template>
 <script>
 import axios from "axios";
+import { showToast } from "../showToast";
 
 export default {
     data() {
@@ -122,7 +127,13 @@ export default {
                 user_name: "",
                 image: null,
             },
-            formError: "",
+            formError: {
+                title: [],
+                description: [],
+                due_date: [],
+                user_id: [],
+                image: [],
+            },
             users: [],
         };
     },
@@ -178,6 +189,7 @@ export default {
                     .then((response) => {
                         console.log(response);
                         this.$router.push({ name: "List" });
+                        showToast("Login successfully", "success");
                     })
                     .catch((error) => {
                         console.log(error.response.data);

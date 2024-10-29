@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { showToast } from "../showToast";
 export default {
     data() {
         return {
@@ -69,6 +70,7 @@ export default {
                         localStorage.setItem("authToken", token);
 
                         this.$router.push({ name: "List" });
+                        showToast("Login successfully", "success");
                     } else {
                         console.log("Token is undefined or null");
                     }
@@ -79,6 +81,11 @@ export default {
                             error.response.data.errors.email || "";
                         this.formError.password =
                             error.response.data.errors.password || "";
+                        const errorMessage =
+                            error.response.data.message || "An error occurred";
+                        showToast(`Error: ${errorMessage}`, "error");
+
+                        this.$router.push({ name: "Login" });
                     }
                 });
         },

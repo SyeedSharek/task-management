@@ -92,6 +92,7 @@
 </template>
 <script>
 import axios from "axios";
+import { showToast } from "../showToast";
 
 export default {
     data() {
@@ -136,9 +137,11 @@ export default {
                     })
                     .then((success) => {
                         this.taskList();
+                        showToast("Search completed successfully", "success");
                     })
                     .catch((error) => {
                         console.log("Data Error");
+                        showToast(`Error: ${errorMessage}`, "error");
                     });
             } else {
                 this.$router.push({ name: "Login" });

@@ -16,14 +16,6 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
 
-     public function __construct()
-     {
-        $this->middleware(['permission:user list'])->only(['index']);
-        $this->middleware(['permission:create user'])->only(['create']);
-        $this->middleware(['permission:edit user'])->only(['edit']);
-        $this->middleware(['permission:delete user'])->only(['delete']);
-        
-     }
 
 
 
