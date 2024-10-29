@@ -62,17 +62,13 @@ class ProductController extends Controller
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(Product $product)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(Request $request, $id)
     {
         $product = Product::findOrfail($id);
@@ -92,9 +88,7 @@ class ProductController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy($id)
     {
         $product = Product::findOrfail($id);

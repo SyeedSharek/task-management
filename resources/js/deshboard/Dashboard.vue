@@ -132,7 +132,7 @@ export default {
                     })
                     .then((response) => {
                         console.log(response.data.permissions);
-                        this.roleWiserPermissions = response.data.permissions; // Store the permissions
+                        this.roleWiserPermissions = response.data.permissions;
                     })
                     .catch((error) => {
                         console.error("Error fetching permissions", error);

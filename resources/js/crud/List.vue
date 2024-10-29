@@ -22,7 +22,7 @@
                     @keyup="search"
                 />
             </div>
-            <table class="table overflow-auto" v-if="tasks.length > 0">
+            <table class="table overflow-auto">
                 <thead>
                     <tr>
                         <th scope="col">SL</th>
@@ -60,7 +60,7 @@
                         </td>
 
                         <td>
-                            <span>{{ task.status }}</span> 
+                            <span>{{ task.status }}</span>
                             <select
                                 v-model="task.status"
                                 @change="updateStatus(task.id, task.status)"
@@ -97,8 +97,7 @@ export default {
     data() {
         return {
             tasks: [],
-            searchQuery: "", // User's search input
-            searchPerformed: false,
+            searchQuery: "",
         };
     },
     mounted() {
@@ -143,6 +142,7 @@ export default {
                     });
             } else {
                 this.$router.push({ name: "Login" });
+                return;
             }
         },
         updateStatus(task_id, status) {
@@ -166,6 +166,7 @@ export default {
                     });
             } else {
                 this.$router.push({ name: "Login" });
+                return;
             }
         },
         logout() {
@@ -189,36 +190,36 @@ export default {
                     console.log(error);
                 });
         },
-
         search() {
-            // If searchQuery is empty, clear the table and return
-            if (this.searchQuery.trim() === "") {
-                this.tasks = [];
-                this.searchPerformed = false;
+            const token = localStorage.getItem("authToken");
+            // const value = e.target.value;
+            const value = this.searchQuery;
+            if (token) {
+                axios
+                    .get(`/api/auth/task/search?search=${value}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                    .then((response) => {
+                        this.tasks = response.data.task;
+                    })
+                    .catch((error) => {
+                        console.log(
+                            "Search error:",
+                            error.response ? error.response.data : error.message
+                        );
+                        this.tasks = [];
+                    });
+            } else {
+                this.$router.push({ name: "Login" });
                 return;
             }
-
-            // Perform the search
-            axios
-                .get("/api/auth/task/search", {
-                    params: {
-                        query: this.searchQuery, // Send the search query as a parameter
-                    },
-                })
-                .then((response) => {
-                    // console.log("Response received:", response);
-                    this.tasks = response.data.tasks;
-                    this.searchPerformed = true; // Set flag indicating a search was performed
-                })
-                .catch((error) => {
-                    console.log("Search error:", error);
-                    this.tasks = []; // Clear the task list on error
-                    this.searchPerformed = true; // Indicate that the search was performed
-                });
         },
     },
 };
 </script>
+
 <style>
 .table-wrapper {
     max-height: 300px; /* Adjust height as needed */

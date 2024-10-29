@@ -118,7 +118,6 @@ class TaskController extends Controller
                 return $this->errorResponse('Task ID is not found', 404);
             } 
     
-            // Validation for input fields including image
             $validation = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'description' => 'required|max:1000',
@@ -127,8 +126,7 @@ class TaskController extends Controller
                 'user_id' => 'required',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
-    
-            // Check if validation fails
+   
             if ($validation->fails()) {
                 return $this->errorResponse('Validation failed', 400, $validation->errors()->toArray());
             }
@@ -204,27 +202,37 @@ class TaskController extends Controller
         return $this->successResponse( 'Task deleted successfully',200);
     }
 
-    public function search(Request $request){
-        
+    public function search(Request $request)
+{
+    if (auth()->check()) {
+      
         $query = Task::with('user');
+
+     
+        $search = $request->query('search');
         
 
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', 'LIKE', '%' .$request->status . '%');
-        }    
-   
-        if ($request->has('due_date') && $request->due_date != '') {
-            $query->orWhere('due_date', 'LIKE', '%' . $request->due_date . '%');
+        if (!empty($search)) {
+            $query->where('status', 'LIKE', '%' . $search . '%');
         }
-    
+
+
+        if (!empty($search)) {
+            $query->orWhere('due_date', 'LIKE', '%' . $search . '%');
+        }
         $tasks = $query->get();
-    
-   
-        if ($tasks->isEmpty()) {
-            return response()->json(['message' => 'No tasks found'], 404);
-        }
-    
+
+     
+        return response()->json(['task'=>$tasks],200);
        
-        return response()->json(['tasks' => $tasks], 200);
+
+       
+
+    } else {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
+}
+
+
+
 }

@@ -64,12 +64,11 @@ export default {
             axios
                 .post("/api/auth/login", this.formData)
                 .then((response) => {
-                    // console.log("API response:", response);
-                    const token = response.data.access_token; // Extract token from access_token
+                    const token = response.data.access_token;
                     if (token) {
-                        localStorage.setItem("authToken", token); // Save token to localStorage
+                        localStorage.setItem("authToken", token);
 
-                        this.$router.push({ name: "List" }); // Redirect to the task list
+                        this.$router.push({ name: "List" });
                     } else {
                         console.log("Token is undefined or null");
                     }
